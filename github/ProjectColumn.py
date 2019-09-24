@@ -146,6 +146,24 @@ class ProjectColumn(github.GithubObject.CompletableGithubObject):
         return github.ProjectCard.ProjectCard(self._requester, headers,
                                               data, completed=True)
 
+    def move_card(self, column):
+        """
+        :calls: `POST /projects/columns/cards/:card_id/moves <http://developer.github.com/v3/issues/labels>`_
+        :param column: :class:`github.ProjectColumn.ProjectColumn`
+        :rtype: None
+        """
+        assert (isinstance(column, github.ProjectColumn.ProjectColumn))
+        post_parameters = {
+            "position": "bottom",
+            "column_id": column.id
+        }
+        headers, data = self._requester.requestJsonAndCheck(
+            "POST",
+            self.url + "/moves",
+            headers={"Accept": Consts.mediaTypeProjectsPreview},
+            input=post_parameters
+        )
+
     def _initAttributes(self):
         self._cards_url = github.GithubObject.NotSet
         self._created_at = github.GithubObject.NotSet
